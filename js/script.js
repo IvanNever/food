@@ -230,20 +230,18 @@ window.addEventListener('DOMContentLoaded', () => {
 
             const formData = new FormData(form);
 
-            // const obj = {};
+            const obj = {};
 
-            // formData.forEach((val, key) => {
-            //     obj[key] = val;
-            // });
+            formData.forEach((val, key) => {
+                obj[key] = val;
+            });
 
-            // const json = JSON.stringify(obj);
-
-            fetch('server1.php',{
+            fetch('server.php',{
                 method: "POST",
-                // headers: {
-                //     'Content-type': 'application/json'
-                // },
-                body: formData
+                headers: {
+                    'Content-type': 'application/json'
+                },
+                body: JSON.stringify(obj)
             })
             .then(data => data.text())
             .then(data => {
