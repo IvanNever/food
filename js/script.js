@@ -274,6 +274,7 @@ window.addEventListener('DOMContentLoaded', () => {
     //Slider
 
     const slides = document.querySelectorAll('.offer__slide'),
+          slider = document.querySelector('.offer__slider'),
           prevSlideBtn = document.querySelector('.offer__slider-prev'),
           nextSlideBtn = document.querySelector('.offer__slider-next'),
           currentSlide = document.querySelector('#current'),
@@ -284,6 +285,19 @@ window.addEventListener('DOMContentLoaded', () => {
 
     let slideIndex = 1,
         offset = 0;
+
+    function changeOpacity() {
+        indicators.forEach(item => item.style.opacity = '.5');
+        indicators[slideIndex - 1].style.opacity = 1;
+    }
+
+    function changeCurrentSlide() {
+        if (slides.length < 10) {
+            currentSlide.textContent = `0${slideIndex}`;
+        } else {
+            currentSlide.textContent = slideIndex;
+        }
+    }
 
     if (slides.length < 10) {
         totalSlides.textContent = `0${slides.length}`;
@@ -303,6 +317,27 @@ window.addEventListener('DOMContentLoaded', () => {
         slide.style.width = width;
     });
 
+    slider.style.position = 'relative';
+
+    const dots = document.createElement('ol'),
+          indicators = [];
+    dots.classList.add('carousel-indicators');
+    slider.append(dots);
+
+    for (let i = 0; i < slides.length; i++) {
+        const dot = document.createElement('li');
+        dot.classList.add('dot');
+        dot.setAttribute('data-slide-to', i + 1);
+
+        if (i == 0) {
+            dot.style.opacity = 1;
+        }
+
+
+        dots.append(dot);
+        indicators.push(dot);
+    }
+
     nextSlideBtn.addEventListener('click', () => {
         if (offset == +width.slice(0, width.length - 2) * (slides.length - 1)) {
             offset = 0;
@@ -317,11 +352,9 @@ window.addEventListener('DOMContentLoaded', () => {
             slideIndex++;
         }
 
-        if (slides.length < 10) {
-            currentSlide.textContent = `0${slideIndex}`;
-        } else {
-            currentSlide.textContent = slideIndex;
-        }
+        changeCurrentSlide();
+
+        changeOpacity();
     });
 
     prevSlideBtn.addEventListener('click', () => {
@@ -338,56 +371,26 @@ window.addEventListener('DOMContentLoaded', () => {
             slideIndex--;
         }
 
-        if (slides.length < 10) {
-            currentSlide.textContent = `0${slideIndex}`;
-        } else {
-            currentSlide.textContent = slideIndex;
-        }
+        changeCurrentSlide();
+
+        changeOpacity();
     });
 
-    // let activeSlide = 0,
-    //     countSlides = slides.length;
+    indicators.forEach(item => {
+        item.addEventListener('click', (e) => {
+            const slideTo = e.target.getAttribute('data-slide-to');
 
-    // totalSlides.innerHTML = `0${countSlides}`;
+            slideIndex = slideTo;
+            offset = +width.slice(0, width.length - 2) * (slideTo - 1);
+            slidesField.style.transform = `translateX(-${offset}px)`;
+            item.style.opacity = 1;
 
-    // prevSlideBtn.addEventListener('click', () => {
-    //     if (activeSlide  == 0) {
-    //         activeSlide = countSlides - 1;
-    //     } else {
-    //         activeSlide--;
-    //     }
-    //     showSlide();
-    //     slidesCounter();
+            changeCurrentSlide();
 
-    // });
+            changeOpacity();
+        });
+    });
 
-    // nextSlideBtn.addEventListener('click', () => {
-    //     if (activeSlide + 1 == countSlides) {
-    //         activeSlide = 0;
-    //     } else {
-    //         activeSlide++;
-    //     }
-    //     showSlide();
-    //     slidesCounter();
 
-    // });
-
-    // function showSlide() {
-    //     slides.forEach((item, i) => {
-    //         if (i == activeSlide) {
-    //             item.classList.add('show');
-    //             item.classList.remove('hide');
-    //         } else {
-    //             item.classList.add('hide');
-    //             item.classList.remove('show');
-    //         }
-    //     });
-    // }
-    // showSlide();
-
-    // function slidesCounter() {
-    //     currentSlide.innerHTML = `0${activeSlide + 1}`;
-    // }
-    // slidesCounter();
 
 });
